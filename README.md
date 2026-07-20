@@ -1,6 +1,6 @@
-# Insta360 Price Dashboard
+# Price Dashboard
 
-Insta360 全球官方商城价格看板。
+全球官方商城价格看板。
 
 - `index.html`：当前线上版本
 - 数据更新前会校验地区、产品、变体、价格单元格和抓取失败数
