@@ -247,6 +247,7 @@ let FX = null;       // {CODE: units-per-CNY}  (1 CNY = FX[CODE] foreign)
 let FX_TIME = '';
 let FX_LOCAL='';
 let FX_NEXT='';
+let FX_SOURCE='';
 function detectCur(p){ if(!p) return null; for(const [tok,iso] of CUR_TOKENS){ if(p.indexOf(tok)>=0) return iso; } return null; }
 // convert a price string to CNY number; null if unknown currency or no FX
 function toCNY(priceStr){
@@ -442,6 +443,9 @@ function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,
 
 // ---- fetch live FX (base CNY) ----
 const FX_URL='https://open.er-api.com/v6/latest/CNY';
+const FX_FALLBACK={CNY:1,USD:0.147565,EUR:0.129406,GBP:0.110221,JPY:24.05207,
+  HKD:1.157121,TWD:4.77327,KRW:218.007412,SGD:0.19048,AUD:0.21086,CAD:0.207916};
+const FX_FALLBACK_DATE='2026-07-22';
 function setFxStatus(txt,cls){ const el=document.getElementById('fxStatus'); el.className='fx-status'+(cls?' '+cls:''); el.innerHTML=(cls?'<span class="dot"></span>':'')+txt; }
 async function loadFX(){
   try{
@@ -452,6 +456,7 @@ async function loadFX(){
     if(j.result!=='success'||!j.rates) throw new Error('bad payload');
     FX=j.rates;
     FX_TIME=j.time_last_update_utc||'';
+    FX_SOURCE='open.er-api.com（实时）';
     // local time of update
     let t=FX_TIME; try{ if(j.time_last_update_unix) t=new Date(j.time_last_update_unix*1000).toLocaleString('zh-CN',{hour12:false}); }catch(e){}
     FX_LOCAL=t;
@@ -460,8 +465,13 @@ async function loadFX(){
     setFxStatus('\ud83d\udcb1 汇率实时 · '+t+' \u25be','ok');
     buildFxPanel();
   }catch(e){
-    FX=null;
-    setFxStatus('汇率获取失败，仅按原币比较（'+e.message+'）','err');
+    FX={...FX_FALLBACK};
+    FX_TIME=FX_FALLBACK_DATE;
+    FX_LOCAL=FX_FALLBACK_DATE;
+    FX_NEXT='下周一随价格数据更新';
+    FX_SOURCE='内置备用汇率';
+    setFxStatus('💱 汇率备用 · '+FX_FALLBACK_DATE+' ▾','ok');
+    buildFxPanel();
   }
   render();
 }
@@ -479,7 +489,7 @@ function buildFxPanel(){
     return `<div class="fx-row"><span class="fx-cur">${iso}<small>${name}</small></span><span class="fx-rate">\u00a5 ${val}</span></div>`;
   }).join('');
   document.getElementById('fxFoot').innerHTML=
-    `更新时间：${esc(FX_LOCAL||'—')}<br>下次更新：${esc(FX_NEXT||'—')}<br>数据源：open.er-api.com（每小时刷新）`;
+    `更新时间：${esc(FX_LOCAL||'—')}<br>下次更新：${esc(FX_NEXT||'—')}<br>数据源：${esc(FX_SOURCE||'—')}`;
 }
 // toggle fx panel
 document.getElementById('fxStatus').addEventListener('click',()=>{
