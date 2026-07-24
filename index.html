@@ -24,17 +24,18 @@ header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdro
 .title .source-note{color:var(--muted);font-size:12px}
 .title .stats{color:var(--muted);font-size:12px;margin-left:auto}
 .controls{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
-.controls.toolbar{background:linear-gradient(135deg,rgba(255,255,255,.88) 0%,rgba(231,240,255,.68) 100%);
-  border:1px solid rgba(255,255,255,.92);border-radius:16px;padding:11px;
+.controls.toolbar{background:linear-gradient(135deg,rgba(250,247,255,.96) 0%,rgba(237,233,254,.88) 52%,rgba(221,214,254,.78) 100%);
+  border:1px solid rgba(255,255,255,.88);border-radius:16px;padding:11px;
   backdrop-filter:blur(18px) saturate(1.45);-webkit-backdrop-filter:blur(18px) saturate(1.45);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 24px rgba(37,99,235,.13),0 1px 3px rgba(16,24,40,.08);
-  outline:1px solid rgba(37,99,235,.12)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 10px 28px rgba(124,58,237,.18),0 2px 5px rgba(76,29,149,.10);
+  outline:1px solid rgba(124,58,237,.22)}
 .toolbar-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .filter-group{flex:1 1 660px}
 .view-group{flex:1 1 580px;justify-content:flex-end}
 .controls input,.controls select{background:rgba(255,255,255,.82);border:1px solid rgba(211,218,228,.9);color:var(--text);
   padding:8px 12px;border-radius:8px;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s}
 .controls input:focus,.controls select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.toolbar input:focus,.toolbar select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.14)}
 .controls input::placeholder{color:var(--faint)}
 #search{min-width:240px;flex:1 1 240px;max-width:360px}
 #productFilter{min-width:220px;flex:1 1 220px;max-width:320px}
@@ -50,6 +51,9 @@ header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdro
   padding:6px 10px;border-radius:8px;transition:background .15s}
 .toggle:hover{background:var(--chip)}
 .toggle input{accent-color:var(--accent);width:15px;height:15px}
+.toolbar .toggle input{accent-color:#7c3aed}
+.toolbar .toggle:hover{background:rgba(124,58,237,.09);color:#5b21b6}
+.toolbar .btn:hover{border-color:#7c3aed;color:#6d28d9;background:rgba(255,255,255,.72)}
 .region-picker{position:relative}
 .region-panel{display:none;position:absolute;top:42px;left:0;z-index:40;background:var(--surface);
   border:1px solid var(--border);border-radius:12px;padding:14px;width:540px;max-height:62vh;overflow:auto;
