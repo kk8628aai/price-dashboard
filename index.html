@@ -18,22 +18,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Micr
   background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
 header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdrop-filter:saturate(1.6) blur(12px);
   -webkit-backdrop-filter:saturate(1.6) blur(12px);border-bottom:1px solid var(--border);padding:16px 24px}
-.title{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .title h1{font-size:19px;font-weight:700;letter-spacing:-.01em}
 .title .date{color:var(--muted);font-size:12px;background:var(--chip);padding:2px 9px;border-radius:20px}
 .title .source-note{color:var(--muted);font-size:12px}
 .title .stats{color:var(--muted);font-size:12px;margin-left:auto}
 .controls{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.controls.toolbar{background:linear-gradient(180deg,#f9fbff 0%,#f3f6fb 100%);border:1px solid var(--border-strong);
+  border-radius:12px;padding:10px;box-shadow:0 3px 12px rgba(16,24,40,.06)}
+.toolbar-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-group{flex:1 1 660px}
+.view-group{flex:1 1 580px;justify-content:flex-end}
 .controls input,.controls select{background:var(--surface);border:1px solid var(--border-strong);color:var(--text);
   padding:8px 12px;border-radius:8px;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s}
 .controls input:focus,.controls select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .controls input::placeholder{color:var(--faint)}
-#search{min-width:240px;flex:1;max-width:360px}
+#search{min-width:240px;flex:1 1 240px;max-width:360px}
+#productFilter{min-width:220px;flex:1 1 220px;max-width:320px}
 .btn{background:var(--surface);border:1px solid var(--border-strong);color:var(--text);padding:8px 13px;
   border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
 .btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
 .author-contact{text-decoration:none;white-space:nowrap}
+.title .author-contact{color:var(--accent);background:var(--accent-soft);border-color:transparent;border-radius:20px;
+  padding:4px 11px;font-size:11px;font-weight:600}
+.title .author-contact:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
 .toggle{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;cursor:pointer;user-select:none;
   padding:6px 10px;border-radius:8px;transition:background .15s}
 .toggle:hover{background:var(--chip)}
@@ -181,34 +190,38 @@ tbody tr:hover td.priciest{background:#fbdcdd!important}
         <h1>全球官方价格看板</h1>
     <span class="date">数据日期 2026-07-20</span>
     <span class="source-note">价格来源于官网 · 每周一更新</span>
+    <a id="authorContact" class="btn author-contact" href="https://www.feishu.cn/invitation/page/add_contact/?token=e55rd826-ba60-4f1b-bae1-af0be7de4deb&amp;unique_id=_VvvBsb5Z1DiTh0z2259AQ==" target="_blank" rel="noopener noreferrer">联系作者 Kiya</a>
     <span class="stats" id="stats"></span>
   </div>
-  <div class="controls">
-    <input type="text" id="search" placeholder="搜索产品 / 变体 / 颜色…">
-    <select id="productFilter"><option value="">全部产品</option></select>
-    <div class="region-picker">
-      <button class="btn" id="regionBtn">选择地区 ▾</button>
-      <div class="region-panel" id="regionPanel">
-        <div class="rp-actions">
-          <button class="btn" id="regAll">全选</button>
-          <button class="btn" id="regNone">清空</button>
-          <button class="btn" id="regKey">核心地区</button>
+  <div class="controls toolbar">
+    <div class="toolbar-group filter-group">
+      <input type="text" id="search" placeholder="搜索产品 / 变体 / 颜色…">
+      <select id="productFilter"><option value="">全部产品</option></select>
+      <div class="region-picker">
+        <button class="btn" id="regionBtn">选择地区 ▾</button>
+        <div class="region-panel" id="regionPanel">
+          <div class="rp-actions">
+            <button class="btn" id="regAll">全选</button>
+            <button class="btn" id="regNone">清空</button>
+            <button class="btn" id="regKey">核心地区</button>
+          </div>
+          <div class="region-grid" id="regionGrid"></div>
         </div>
-        <div class="region-grid" id="regionGrid"></div>
       </div>
     </div>
-    <label class="toggle"><input type="checkbox" id="onlyDiscount">仅显示有折扣</label>
-    <label class="toggle"><input type="checkbox" id="cnyOn" checked>显示人民币换算</label>
-    <label class="toggle"><input type="checkbox" id="highlight" checked>高亮最低/最高价</label>
-    <div class="fx-picker">
-      <span id="fxStatus" class="fx-status" title="点击查看各币种汇率明细">汇率加载中…</span>
-      <div class="fx-panel" id="fxPanel">
-        <div class="fx-panel-head">各币种 → 人民币（1 外币 = ? CNY）</div>
-        <div id="fxList" class="fx-list"></div>
-        <div class="fx-panel-foot" id="fxFoot"></div>
+    <div class="toolbar-group view-group">
+      <label class="toggle"><input type="checkbox" id="onlyDiscount">仅显示有折扣</label>
+      <label class="toggle"><input type="checkbox" id="cnyOn" checked>显示人民币换算</label>
+      <label class="toggle"><input type="checkbox" id="highlight" checked>高亮最低/最高价</label>
+      <div class="fx-picker">
+        <span id="fxStatus" class="fx-status" title="点击查看各币种汇率明细">汇率加载中…</span>
+        <div class="fx-panel" id="fxPanel">
+          <div class="fx-panel-head">各币种 → 人民币（1 外币 = ? CNY）</div>
+          <div id="fxList" class="fx-list"></div>
+          <div class="fx-panel-foot" id="fxFoot"></div>
+        </div>
       </div>
     </div>
-    <a id="authorContact" class="btn author-contact" href="https://www.feishu.cn/invitation/page/add_contact/?token=e55rd826-ba60-4f1b-bae1-af0be7de4deb&amp;unique_id=_VvvBsb5Z1DiTh0z2259AQ==" target="_blank" rel="noopener noreferrer">联系作者 Kiya</a>
   </div>
 </header>
 <div class="legend">
@@ -408,7 +421,7 @@ function renderSummary(rows){
   const singleProduct=document.getElementById('productFilter').value;
   // Only meaningful to compare cheapest/priciest across regions for the SAME product.
   if(!singleProduct){
-    bar.innerHTML=`<div class="summary-note">选择单个产品后，这里显示折合人民币的全球最低价 / 最高价对比。</div>`;
+    bar.innerHTML=`<div class="summary-note">选择单个产品后，这里将显示折合人民币的全球最低价 / 最高价对比。</div>`;
     return;
   }
   if(!FX){ bar.innerHTML=`<div class="summary-note">汇率不可用，暂无法做跨货币横比。</div>`; return; }
