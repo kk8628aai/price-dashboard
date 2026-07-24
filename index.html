@@ -25,13 +25,15 @@ header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdro
 .title .stats{color:var(--muted);font-size:12px;margin-left:auto}
 .controls{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
 .controls.toolbar{background:linear-gradient(135deg,rgba(255,254,249,.97) 0%,rgba(254,249,195,.48) 55%,rgba(254,240,138,.28) 100%);
-  border:1px solid rgba(255,255,255,.88);border-radius:16px;padding:11px;
-  backdrop-filter:blur(18px) saturate(1.45);-webkit-backdrop-filter:blur(18px) saturate(1.45);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 9px 26px rgba(202,138,4,.12),0 2px 5px rgba(120,87,16,.07);
-  outline:1px solid rgba(202,138,4,.16)}
+  border:1px solid rgba(202,138,4,.14);border-radius:14px;padding:10px;
+  backdrop-filter:blur(12px) saturate(1.25);-webkit-backdrop-filter:blur(12px) saturate(1.25);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 4px 14px rgba(120,87,16,.08)}
 .toolbar-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .filter-group{flex:1 1 660px}
-.view-group{flex:1 1 580px;justify-content:flex-end}
+.view-group{flex:1 1 580px;justify-content:flex-start}
+.view-group .fx-picker{margin-left:auto}
+.group-label{color:#854d0e;font-size:10px;font-weight:700;letter-spacing:.08em;background:rgba(255,255,255,.58);
+  border:1px solid rgba(202,138,4,.16);border-radius:6px;padding:3px 7px;white-space:nowrap}
 .controls input,.controls select{background:rgba(255,255,255,.82);border:1px solid rgba(211,218,228,.9);color:var(--text);
   padding:8px 12px;border-radius:8px;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s}
 .controls input:focus,.controls select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
@@ -48,11 +50,13 @@ header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdro
   padding:4px 11px;font-size:11px;font-weight:600}
 .title .author-contact:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
 .toggle{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;cursor:pointer;user-select:none;
-  padding:6px 10px;border-radius:8px;transition:background .15s}
+  padding:6px 10px;border:1px solid transparent;border-radius:8px;transition:all .15s}
 .toggle:hover{background:var(--chip)}
 .toggle input{accent-color:var(--accent);width:15px;height:15px}
 .toolbar .toggle input{accent-color:#ca8a04}
 .toolbar .toggle:hover{background:rgba(202,138,4,.08);color:#854d0e}
+.toolbar .toggle:has(input:checked){background:rgba(255,255,255,.72);border-color:rgba(202,138,4,.20);
+  color:#713f12;box-shadow:0 1px 2px rgba(120,87,16,.06)}
 .toolbar .btn:hover{border-color:#ca8a04;color:#a16207;background:rgba(255,255,255,.76)}
 .region-picker{position:relative}
 .region-panel{display:none;position:absolute;top:42px;left:0;z-index:40;background:var(--surface);
@@ -202,6 +206,7 @@ tbody tr:hover td.priciest{background:#fbdcdd!important}
   </div>
   <div class="controls toolbar">
     <div class="toolbar-group filter-group">
+      <span class="group-label">筛选</span>
       <input type="text" id="search" placeholder="搜索产品 / 变体 / 颜色…">
       <select id="productFilter"><option value="">全部产品</option></select>
       <div class="region-picker">
@@ -217,6 +222,7 @@ tbody tr:hover td.priciest{background:#fbdcdd!important}
       </div>
     </div>
     <div class="toolbar-group view-group">
+      <span class="group-label">显示</span>
       <label class="toggle"><input type="checkbox" id="onlyDiscount">仅显示有折扣</label>
       <label class="toggle"><input type="checkbox" id="cnyOn" checked>显示人民币换算</label>
       <label class="toggle"><input type="checkbox" id="highlight" checked>高亮最低/最高价</label>
