@@ -25,14 +25,12 @@ header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdro
 .title .stats{color:var(--muted);font-size:12px;margin-left:auto}
 .controls{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
 .controls.toolbar{display:grid;grid-template-columns:1fr;gap:8px;background:#fffdf2;
-  border:1px solid rgba(202,138,4,.14);border-radius:14px;padding:10px;
-  backdrop-filter:blur(12px) saturate(1.25);-webkit-backdrop-filter:blur(12px) saturate(1.25);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 4px 14px rgba(120,87,16,.08)}
+  border:1px solid #f1e2b9;border-radius:14px;padding:10px}
 .toolbar-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .filter-group,.view-group{width:100%;flex:none;justify-content:flex-start}
 .view-group .fx-picker{margin-left:auto}
-.group-label{color:#854d0e;font-size:10px;font-weight:700;letter-spacing:.08em;background:rgba(255,255,255,.58);
-  border:1px solid rgba(202,138,4,.16);border-radius:6px;padding:3px 7px;white-space:nowrap;width:48px;
+.group-label{color:#854d0e;font-size:10px;font-weight:700;letter-spacing:.08em;background:#fff7dc;
+  border:1px solid #f1e2b9;border-radius:6px;padding:3px 7px;white-space:nowrap;width:48px;
   flex:0 0 48px;text-align:center}
 .controls input,.controls select{background:rgba(255,255,255,.82);border:1px solid rgba(211,218,228,.9);color:var(--text);
   padding:8px 12px;border-radius:8px;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s}
@@ -55,9 +53,8 @@ header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdro
 .toggle input{accent-color:var(--accent);width:15px;height:15px}
 .toolbar .toggle input{accent-color:#ca8a04}
 .toolbar .toggle:hover{background:rgba(202,138,4,.08);color:#854d0e}
-.toolbar .toggle:has(input:checked){background:rgba(255,255,255,.72);border-color:rgba(202,138,4,.20);
-  color:#713f12;box-shadow:0 1px 2px rgba(120,87,16,.06)}
-.toolbar .btn:hover{border-color:#ca8a04;color:#a16207;background:rgba(255,255,255,.76)}
+.toolbar .toggle:has(input:checked){background:#ffffff;border-color:#ead7a6;color:#713f12}
+.toolbar .btn:hover{border-color:#ca8a04;color:#a16207;background:#fffaf0}
 .region-picker{position:relative}
 .region-panel{display:none;position:absolute;top:42px;left:0;z-index:40;background:var(--surface);
   border:1px solid var(--border);border-radius:12px;padding:14px;width:540px;max-height:62vh;overflow:auto;
