@@ -171,6 +171,16 @@ tbody tr:hover td.priciest{background:#fbdcdd!important}
 .fx-row .fx-cur small{color:var(--faint);font-weight:400;margin-left:5px}
 .fx-row .fx-rate{font-variant-numeric:tabular-nums;color:var(--text)}
 .fx-panel-foot{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--faint);line-height:1.6}
+.standard-price-picker{position:relative;display:inline-block}
+.standard-price-panel{width:460px}
+.standard-price-table{width:100%;border-collapse:collapse;font-size:12px}
+.standard-price-table th,.standard-price-table td{padding:7px 8px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.standard-price-table th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.standard-price-table tbody tr:last-child td{border-bottom:none}
+.standard-price-table td:first-child{max-width:190px;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.standard-price-table a{color:var(--text);text-decoration:none;font-variant-numeric:tabular-nums}
+.standard-price-table a:hover{color:var(--accent);text-decoration:underline}
+.standard-price-empty{padding:10px 0;color:var(--muted);font-size:12px}
 .cny{display:block;margin-top:3px;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
 .summary-card .sc-cny{font-size:13px;color:var(--muted);font-weight:600;margin-top:2px}
 #summaryBar{display:flex;gap:14px;flex-wrap:wrap;padding:18px 24px 4px;background:var(--bg)}
@@ -227,6 +237,14 @@ tbody tr:hover td.priciest{background:#fbdcdd!important}
       <label class="toggle"><input type="checkbox" id="onlyDiscount">仅显示有折扣</label>
       <label class="toggle"><input type="checkbox" id="cnyOn" checked>显示人民币换算</label>
       <label class="toggle"><input type="checkbox" id="highlight" checked>高亮最低/最高价</label>
+      <div class="standard-price-picker">
+        <button class="btn" id="standardPriceBtn" type="button">标准价速览</button>
+        <div class="fx-panel standard-price-panel" id="standardPricePanel">
+          <div class="fx-panel-head">标准价速览 · 中国大陆 / United States</div>
+          <div id="standardPriceList"></div>
+          <div class="fx-panel-foot">仅展示产品基础款；已过滤升级套装与配件。</div>
+        </div>
+      </div>
       <div class="fx-picker">
         <span id="fxStatus" class="fx-status" title="点击查看各币种汇率明细">汇率加载中…</span>
         <div class="fx-panel" id="fxPanel">
@@ -531,11 +549,47 @@ function buildFxPanel(){
   document.getElementById('fxFoot').innerHTML=
     `更新时间：${esc(FX_LOCAL||'—')}<br>下次更新：${esc(FX_NEXT||'—')}<br>数据源：${esc(FX_SOURCE||'—')}`;
 }
+// ---- standard price quick view (base products only) ----
+const STANDARD_BUNDLE=/\bstandard bundle\b|标准(?:版|套装)|標準(?:版|套裝)/i;
+const UPGRADE_BUNDLE=/\b(creator|essentials?|starter|adventure|travel|vlog|xplorer|dual battery|single battery|ultimate|infinity|premium|bundle|kit|combo|pack|gift|card|battery)\b|(?:套装|套組|套餐|礼盒|組合|组合)/i;
+function standardRank(variant){ return STANDARD_BUNDLE.test(variant||'') ? 0 : 1; }
+function standardPriceRows(){
+  const rows=new Map();
+  DATA.rows.filter(row=>{
+    const variant=row.variant||'';
+    return (row.category||'product')==='product' && (STANDARD_BUNDLE.test(variant)||!UPGRADE_BUNDLE.test(variant));
+  }).forEach(row=>{
+    const entry=rows.get(row.product)||{product:row.product,china:null,us:null};
+    [['中国大陆','china'],['United States','us']].forEach(([region,key])=>{
+      const cell=row.regions[region]; if(!cell?.price) return;
+      const offer={...cell,rank:standardRank(row.variant),amount:num(cell.price)};
+      const current=entry[key];
+      if(!current || offer.rank<current.rank || (offer.rank===current.rank && offer.amount<current.amount)) entry[key]=offer;
+    });
+    rows.set(row.product,entry);
+  });
+  return [...rows.values()].filter(row=>row.china||row.us).sort((a,b)=>a.product.localeCompare(b.product));
+}
+function buildStandardPricePanel(){
+  const list=document.getElementById('standardPriceList');
+  const price=cell=>cell?`<a href="${esc(cell.url)}" target="_blank" rel="noopener noreferrer">${esc(cell.price)}</a>`:'—';
+  const rows=standardPriceRows();
+  list.innerHTML=rows.length?`<table class="standard-price-table"><thead><tr><th>产品</th><th>中国大陆</th><th>United States</th></tr></thead><tbody>${rows.map(row=>`<tr><td title="${esc(row.product)}">${esc(row.product)}</td><td>${price(row.china)}</td><td>${price(row.us)}</td></tr>`).join('')}</tbody></table>`:'<div class="standard-price-empty">暂无可展示的标准价。</div>';
+}
+document.getElementById('standardPriceBtn').addEventListener('click',()=>{
+  buildStandardPricePanel();
+  document.getElementById('standardPricePanel').classList.toggle('open');
+  document.getElementById('fxPanel').classList.remove('open');
+});
 // toggle fx panel
 document.getElementById('fxStatus').addEventListener('click',()=>{
+  document.getElementById('standardPricePanel').classList.remove('open');
   document.getElementById('fxPanel').classList.toggle('open');
 });
-document.addEventListener('click',e=>{ if(!e.target.closest('.fx-picker')) document.getElementById('fxPanel').classList.remove('open'); });
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.fx-picker')) document.getElementById('fxPanel').classList.remove('open');
+  if(!e.target.closest('.standard-price-picker')) document.getElementById('standardPricePanel').classList.remove('open');
+});
 
 // ---- price compare (pick two cells) ----
 function lookupSel(key){
